@@ -13,7 +13,8 @@
 I commented the script pretty thoroughly, but some things may be confusing to read even with explanations (especially the regex). However, if you have any questions about how my code works, please do let me know and I'll try to explain where I can. I'd advise Googling your question first however, as that often will answer things faster than I can.
 
 # To-do List
-- [ ] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers
+- [ ] Release this repo to the public.
+- [ ] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers.
 
 # Notes
 * **Big** shout-out to [RedditPreview](http://redditpreview.com/) as it helped immensely with debugging the Markup formatting!
