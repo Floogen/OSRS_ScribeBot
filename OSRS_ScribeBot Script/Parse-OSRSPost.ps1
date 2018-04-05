@@ -10,7 +10,7 @@
     $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
 
     #Jagex uses the following to designate their titles/author/title image (usually)
-        #NOTE: you'll see this double split be used often within this script, as Powershell's (v5) ParsedHtml doesn't seem to work properly/at all on Jagex's articles
+        #NOTE: you'll see this double split & regex be used often within this script, as Powershell's (v5) ParsedHtml doesn't seem to work properly/at all on Jagex's articles
     $titleContent = (($r.Content -split '<div class="left">')[1] -split '</div>')[0]
     
     $title = (($titleContent -split '<h2>')[1] -split '</h2>')[0]
@@ -60,6 +60,8 @@
 
 
     #image formatting starts below
+    #TODO: Utilize imgur to host the Jagex given images so that others (who can't access Jagex's domain) may view them
+        #will need to look into imgur's API
 
     #using regex to filter and grab the image links
     [regex]$filter = '<img src=".*'
