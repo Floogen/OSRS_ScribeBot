@@ -3,9 +3,9 @@
 
 # How It Works
 1. The script is scheduled to check [/r/2007scape/](https://www.reddit.com/r/2007scape/new) every minute for new posts with a https://services.runescape.com/m=news/ link.
-2. After finding a match, the script caches the post via Reddit's save function (the script will then ignore it in future passes, as it ignores all saved posts)
-3. With the newly saved match, the script then calls the parsing method (Parse-OSRSPost) and converts it from HTML to Reddit's Markup.
-	- I'd highly advise you read the comments on Parse-OSRSPost, as this particular step makes up the majority of the script's functionality.
+2. After finding a match, the script caches the post via Reddit's save function (the script will then ignore it in future passes, as it ignores all saved posts).
+3. With the newly saved match, the script then calls the parsing method (Parse-OSRSPost) and converts it from HTML to Reddit's Markup language.
+	- I'd highly advise you read the comments on [Parse-OSRSPost](OSRS_ScribeBot/OSRS_ScribeBot Script/Parse-OSRSPost.ps1), as this particular step makes up the majority of the script's functionality.
 4. Finally, the script posts the Markup-formatted news post onto the matched Reddit post.
 	- If the post is larger than Reddit's allowed limit (10,000 characters), then the script splits it into several fragments and comments them below one another.
 
