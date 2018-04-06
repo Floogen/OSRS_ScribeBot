@@ -1,4 +1,8 @@
-﻿function parsePost([string]$postUri)
+﻿#load in Upload-ToImgur function
+. "$PSScriptRoot\Upload-ToImgur.ps1"
+
+
+function parsePost([string]$postUri)
 {
     #big shoutout to [http://redditpreview.com/], as it helped debugging immensely!
 
@@ -26,7 +30,8 @@
     #grabbing the thumbnail of the news article
     $imageSummaryContent = (($r.Content -split '<div id="osrsSummaryImage">')[1] -split '</div>')[0]
     $titleImage = "[Title Image]("+(($imageSummaryContent -split 'src="')[1] -split '">')[0]+")"
-    
+    $titleImageUri = ((($titleImage -split "\(")[1])  -split "\)")[0]
+    $titleImage = ($titleImage -replace $titleImageUri, (convertToImgur -imageUri ($titleImageUri) -postTitle ($title + " title image")))
     #$parsedArticleText will makeup the Markup body that will be posted
     $parsedArticleText = "#$title`n**Author:** $author  `n**Date:** $date  `n**Thumbnail: $titleImage**`n`n&nbsp;"
 
@@ -84,7 +89,21 @@
         else
         {
             #unique image, add it to the raw Markup body
-            $rawArticleText = ($rawArticleText -replace $imgLink,$replacementLink)
+            if($replacementLink -match "imgur")
+            {
+                #is imgur image, proceed without uploading
+                $rawArticleText = ($rawArticleText -replace $imgLink,$replacementLink)
+            }
+            else
+            {
+                #image not imgur hosted, upload it
+                    #get the uri of the image and send it to the convertToImgur function
+                    #then replace the output of the function with the current rawUri to get the imgur host link
+                $rawURI = ((($replacementLink -split "\(")[1])  -split "\)")[0]
+                $replacementLink = ($replacementLink -replace $rawURI, (convertToImgur -imageUri $rawURI -postTitle ($title + "[Image \#"+($imageCounter)+"]")))
+                $rawArticleText = ($rawArticleText -replace $imgLink,$replacementLink)
+            }
+
             #increment the image counter for unique images
             $imageCounter++
         }
@@ -185,3 +204,5 @@
     #return the now parsed Markup text
     return $parsedArticleText
 }
+
+(parsePost -postUri 'http://services.runescape.com/m=news/f2p-pvp-world--world-rota?oldschool=1') | clip
