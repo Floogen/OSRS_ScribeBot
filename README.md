@@ -14,7 +14,7 @@ I commented the script pretty thoroughly, but some things may be confusing to re
 
 # To-do List
 - [ ] Release this repo to the public.
-- [ ] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers.
+- [x] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers.
 
 # Notes
 * **Big** shout-out to [RedditPreview](http://redditpreview.com/) as it helped immensely with debugging the Markup formatting!
