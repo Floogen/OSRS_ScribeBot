@@ -204,5 +204,3 @@ function parsePost([string]$postUri)
     #return the now parsed Markup text
     return $parsedArticleText
 }
-
-(parsePost -postUri 'http://services.runescape.com/m=news/f2p-pvp-world--world-rota?oldschool=1') | clip

@@ -2,7 +2,7 @@
 {
     #grab client id from our local csv file
     $imgurClientID = (Import-Csv -Path "$PSScriptRoot\imgurAPILogin.csv").imgurClientID
-
+    
     <#
     $credentials = @{
         refresh_token = ""
@@ -26,18 +26,17 @@
         title = $postTitle
         image = $imageUri
         }
-
     #attempt to upload the image into imgur
     try
     {
-        $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -ContentType 'application/x-www-form-urlencoded')
+        $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -DisableKeepAlive -ContentType 'application/x-www-form-urlencoded')
     }
     catch
     {
         Write-Host "Error on posting image to imgur, trying again"
         try
         {
-            $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -ContentType 'application/x-www-form-urlencoded')
+            $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -DisableKeepAlive -ContentType 'application/x-www-form-urlencoded')
         }
         catch
         {
