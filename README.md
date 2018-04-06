@@ -1,5 +1,5 @@
 # OSRS_ScribeBot
-[Reddit Bot] Parses Jagex's news post into Markup that are linked on Reddit utilizing their API.
+[Reddit Bot] **Powershell** script that parses Jagex's news post into Markup that are linked on Reddit utilizing their API.
 
 # How It Works
 1. The script is scheduled to check [/r/2007scape/](https://www.reddit.com/r/2007scape/new) every minute for new posts with a [OSRS news link](http://services.runescape.com/m=news/).
