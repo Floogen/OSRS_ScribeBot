@@ -65,8 +65,6 @@ function parsePost([string]$postUri)
 
 
     #image formatting starts below
-    #TODO: Utilize imgur to host the Jagex given images so that others (who can't access Jagex's domain) may view them
-        #will need to look into imgur's API (USE: https://apidocs.imgur.com/#c85c9dfc-7487-4de2-9ecd-66f727cf3139)
 
     #using regex to filter and grab the image links
     [regex]$filter = '<img src=".*'
