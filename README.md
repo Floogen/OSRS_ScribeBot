@@ -13,7 +13,8 @@
 I commented the script pretty thoroughly, but some things may be confusing to read even with explanations (especially the regex). However, if you have any questions about how my code works, please do let me know and I'll try to explain where I can. I'd advise Googling your question first however, as that often will answer things faster than I can.
 
 # To-do List
-- [ ] Release this repo to the public.
+- [ ] Move away from ASCII and towards UTF8, to better handle special characters in news post (such as in [here](http://services.runescape.com/m=news/price-increase-june-4th-2018?oldschool=1))
+- [x] Release this repo to the public.
 - [x] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers.
 
 # Notes
