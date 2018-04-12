@@ -11,8 +11,24 @@ function parsePost([string]$postUri)
     #get raw news post
         #we can't seem to use ParsedHtml from WebRequest, either due to PS or how Jagex does their HTML
             #so we'll need to use the UseBasicParsing and parse it ourselves
-    $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
-
+    try
+    {
+        $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
+    }
+    catch
+    {
+        Write-Host "Failed to grab info, trying again..."
+        
+        try
+        {
+            $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
+        }
+        catch
+        {
+            Write-Host "Failed to grab info again, trying one more time..."
+            $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
+        }
+    }
     #Jagex uses the following to designate their titles/author/title image (usually)
         #NOTE: you'll see this double split & regex be used often within this script, as Powershell's (v5) ParsedHtml doesn't seem to work properly/at all on Jagex's articles
     $titleContent = (($r.Content -split '<div class="left">')[1] -split '</div>')[0]
@@ -202,3 +218,5 @@ function parsePost([string]$postUri)
     #return the now parsed Markup text
     return $parsedArticleText
 }
+
+parsePost -postUri 'http://services.runescape.com/m=news/quality-of-life-improvements?oldschool=1' | clip
