@@ -219,4 +219,4 @@ function parsePost([string]$postUri)
     return $parsedArticleText
 }
 
-parsePost -postUri 'http://services.runescape.com/m=news/quality-of-life-improvements?oldschool=1' | clip
+#parsePost -postUri 'http://services.runescape.com/m=news/quality-of-life-improvements?oldschool=1' | clip
