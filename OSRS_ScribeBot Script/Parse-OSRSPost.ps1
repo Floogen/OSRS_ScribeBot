@@ -210,7 +210,7 @@ function parsePost([string]$postUri)
     $rawArticleText = ($rawArticleText -replace "`t",'')
 
     #band-aid fix to remove the target_blank issue with some urls (need to better implement the regex to parse that out)
-    $rawArticleText = ($rawArticleText -replace '" target="_blank')
+    $rawArticleText = ($rawArticleText -replace '" target="_blank','')
 
     #append the raw (now parsed text) to the main Markup body
     $parsedArticleText += $rawArticleText
