@@ -14,6 +14,7 @@ I commented the script pretty thoroughly, but some things may be confusing to re
 
 # To-do List
 - [ ] Move away from ASCII and towards UTF8, to better handle special characters in news post (such as in [here](http://services.runescape.com/m=news/price-increase-june-4th-2018?oldschool=1))
+- [x] Corrected formatting issues Markup's bold, italic and strikethroughs. Should no longer have missed formatting or leftover Markup characters.
 - [x] Release this repo to the public.
 - [x] Implement Imgur's REST API to store Jagex's local image files and make them more available to viewers.
 
