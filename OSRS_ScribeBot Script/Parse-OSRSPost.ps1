@@ -126,20 +126,21 @@ function parsePost([string]$postUri)
     #end of image formatting
 
     #text style replacements
-    $rawArticleText = (($rawArticleText -replace '<em>[\s]+','*') -replace "[\s]+</em>",'*')
-    $rawArticleText = (($rawArticleText -replace '<em>\s?','*') -replace '\s?</em>','*')
+        #we're replacing the different forms of bold, italics, etc into one form each for the next step of parsing for Markup
+    $rawArticleText = (($rawArticleText -replace '<em>[\s]+','<i>') -replace "[\s]+</em>",'</i>')
+    $rawArticleText = (($rawArticleText -replace '<em>\s?','<i>') -replace '\s?</em>','</i>')
 
-    $rawArticleText = (($rawArticleText -replace '<i>[\s]+','*') -replace "[\s]+</i>",'*')
-    $rawArticleText = (($rawArticleText -replace '<i>\s?','*') -replace "\s?</i>",'*')
+    $rawArticleText = (($rawArticleText -replace '<i>[\s]+','<i>') -replace "[\s]+</i>",'</i>')
+    $rawArticleText = (($rawArticleText -replace '<i>\s?','<i>') -replace "\s?</i>",'</i>')
 
-    $rawArticleText = (($rawArticleText -replace '<b>[\s]+','**') -replace '[\s]+</b>','**')
-    $rawArticleText = (($rawArticleText -replace '<b>\s?','**') -replace '\s?</b>','**')
+    $rawArticleText = (($rawArticleText -replace '<b>[\s]+','<b>') -replace '[\s]+</b>','</b>')
+    $rawArticleText = (($rawArticleText -replace '<b>\s?','<b>') -replace '\s?</b>','</b>')
 
-    $rawArticleText = (($rawArticleText -replace '<strong>[\s]+','**') -replace '[\s]+</strong>','**')
-    $rawArticleText = (($rawArticleText -replace '<strong>\s?','**') -replace '\s?</strong>','**')
+    $rawArticleText = (($rawArticleText -replace '<strong>[\s]+','<b>') -replace '[\s]+</strong>','</b>')
+    $rawArticleText = (($rawArticleText -replace '<strong>\s?','<b>') -replace '\s?</strong>','</b>')
 
-    $rawArticleText = (($rawArticleText -replace '<s>[\s]+','~~') -replace '[\s]+</s>','~~')
-    $rawArticleText = (($rawArticleText -replace '<s>\s?','~~') -replace '\s?</s>','~~')
+    $rawArticleText = (($rawArticleText -replace '<s>[\s]+','<s>') -replace '[\s]+</s>','</s>')
+    $rawArticleText = (($rawArticleText -replace '<s>\s?','<s>') -replace '\s?</s>','</s>')
 
     $rawArticleText = (($rawArticleText -replace "<li>([^`n]+)",("`n- " + '$1'+"`n`n")) -replace '\s?</li>',"&nbsp;`n`n")
     
@@ -149,6 +150,106 @@ function parsePost([string]$postUri)
     $rawArticleText = (($rawArticleText -replace '<h5>\s?','#####') -replace '\s?</h5>','')
     $rawArticleText = (($rawArticleText -replace '<h6>\s?','######') -replace '\s?</h6>','')
     #end of text style replacements
+
+    #this quickly parses out all the HTML tags for the formating for bold, italics, strikethrough and works around
+        #markup's limitation of formating on a per line basis (it breaks when there are line breaks)
+    $italicEndMissing = $false
+    $boldEndMissing = $false
+    $strikeEndMissing = $false
+    $fixedChunk = ""
+    foreach($line in $rawArticleText.Split([Environment]::NewLine))
+    {
+        if($italicEndMissing)
+        {
+            if($line -match '</i>')
+            {
+                #start and end of italic is on same line (before line break)
+                $line = '*' + ($line -replace '</i>','*')
+                $italicEndMissing = $false
+            }
+            elseif($line -match '[A-Z]')
+            {
+                $line = '*'+ $line + '*'
+            }
+        }
+
+        if($boldEndMissing)
+        {
+            if($line -match '</b>')
+            {
+                #start and end of italic is on same line (before line break)
+                $line = '**' + ($line -replace '</b>','**')
+                $boldEndMissing = $false
+            }
+            elseif($line -match '[A-Z]')
+            {
+                $line = '**'+ $line + '**'
+            }
+        }
+        if($strikeEndMissing)
+        {
+            if($line -match '</s>')
+            {
+                #start and end of italic is on same line (before line break)
+                $line = '~~' + ($line -replace '</s>','~~')
+                $strikeEndMissing = $false
+            }
+            elseif($line -match '[A-Z]')
+            {
+                $line = '~~'+ $line + '~~'
+            }
+        }
+        if($line -match '<i>')
+        {
+            if($line -match '</i>')
+            {
+                #start and end of italic is on same line (before line break)
+                $line = ($line -replace '<i>','*') -replace '</i>','*'
+            }
+            else
+            {
+                #line doesn't contain end piece, add * to end of each line until '</i> is found
+                $italicEndMissing = $true
+                
+                $line = ($line -replace '<i>','*') + '*'
+                
+            }
+        }
+        #bold
+        if($line -match '<b>')
+        {
+            if($line -match '</b>')
+            {
+                #start and end of bold is on same line (before line break)
+                $line = ($line -replace '<b>','**') -replace '</b>','**'
+            }
+            else
+            {
+                #line doesn't contain end piece, add ** to end of each line until '</b> is found
+                $boldEndMissing = $true
+                $line = ($line -replace '<b>','**') + '**'
+            }
+        }
+        #strike
+        if($line -match '<s>')
+        {
+            if($line -match '</s>')
+            {
+                #start and end of strike is on same line (before line break)
+                $line = ($line -replace '<s>','~~') -replace '</s>','~~'
+            }
+            else
+            {
+                #line doesn't contain end piece, add ** to end of each line until '</s> is found
+                $strikeEndMissing = $true
+                $line = ($line -replace '<s>','~~') + '~~'
+            }
+        }
+        $fixedChunk += $line +"`n"
+    }
+    #reapply the fixedChunk to the old variable
+    $rawArticleText = $fixedChunk
+
 
     #table formating
 
@@ -222,4 +323,4 @@ function parsePost([string]$postUri)
     return $parsedArticleText
 }
 
-#parsePost -postUri 'http://services.runescape.com/m=news/quality-of-life-improvements?oldschool=1' | clip
+#parsePost -postUri 'http://services.runescape.com/m=news/osrs-mobile-ios-beta-invitations-sent?oldschool=1' | clip
