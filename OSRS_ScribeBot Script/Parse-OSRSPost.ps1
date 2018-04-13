@@ -151,6 +151,10 @@ function parsePost([string]$postUri)
     $rawArticleText = (($rawArticleText -replace '<h4>\s?','####') -replace '\s?</h4>','')
     $rawArticleText = (($rawArticleText -replace '<h5>\s?','#####') -replace '\s?</h5>','')
     $rawArticleText = (($rawArticleText -replace '<h6>\s?','######') -replace '\s?</h6>','')
+
+    #unordered table clean up
+    $rawArticleText = (($rawArticleText -replace '<ul>[\s]+','') -replace "[\s]+</ul>",'')
+    $rawArticleText = (($rawArticleText -replace '<ul>\s?','') -replace '\s?</ul>','')
     #end of text style replacements
 
     #this quickly parses out all the HTML tags for the formating for bold, italics, strikethrough and works around
@@ -166,12 +170,12 @@ function parsePost([string]$postUri)
             if($line -match '</i>')
             {
                 #start and end of italic is on same line (before line break)
-                $line = '*' + ($line -replace '</i>','*')
+                $line = '*' + ($line.Trim() -replace '</i>','*')
                 $italicEndMissing = $false
             }
             elseif($line -match '[A-Z]')
             {
-                $line = '*'+ $line + '*'
+                $line = '*'+ $line.Trim() + '*'
             }
         }
 
@@ -180,12 +184,12 @@ function parsePost([string]$postUri)
             if($line -match '</b>')
             {
                 #start and end of italic is on same line (before line break)
-                $line = '**' + ($line -replace '</b>','**')
+                $line = '**' + ($line.Trim() -replace '</b>','**')
                 $boldEndMissing = $false
             }
             elseif($line -match '[A-Z]')
             {
-                $line = '**'+ $line + '**'
+                $line = '**'+ $line.Trim() + '**'
             }
         }
         if($strikeEndMissing)
@@ -193,12 +197,12 @@ function parsePost([string]$postUri)
             if($line -match '</s>')
             {
                 #start and end of italic is on same line (before line break)
-                $line = '~~' + ($line -replace '</s>','~~')
+                $line = '~~' + ($line.Trim() -replace '</s>','~~')
                 $strikeEndMissing = $false
             }
             elseif($line -match '[A-Z]')
             {
-                $line = '~~'+ $line + '~~'
+                $line = '~~'+ $line.Trim() + '~~'
             }
         }
         if($line -match '<i>')
@@ -206,15 +210,15 @@ function parsePost([string]$postUri)
             if($line -match '</i>')
             {
                 #start and end of italic is on same line (before line break)
-                $line = ($line -replace '<i>','*') -replace '</i>','*'
+                $line = ($line.Trim() -replace '<i>','*') -replace '</i>','*'
             }
             else
             {
                 #line doesn't contain end piece, add * to end of each line until '</i> is found
                 $italicEndMissing = $true
                 
-                $line = ($line -replace '<i>','*') + '*'
-                
+                $line = ($line.Trim() -replace '<i>','*') + '*'
+
             }
         }
         #bold
@@ -223,13 +227,13 @@ function parsePost([string]$postUri)
             if($line -match '</b>')
             {
                 #start and end of bold is on same line (before line break)
-                $line = ($line -replace '<b>','**') -replace '</b>','**'
+                $line = ($line.Trim() -replace '<b>','**') -replace '</b>','**'
             }
             else
             {
                 #line doesn't contain end piece, add ** to end of each line until '</b> is found
                 $boldEndMissing = $true
-                $line = ($line -replace '<b>','**') + '**'
+                $line = ($line.Trim() -replace '<b>','**') + '**'
             }
         }
         #strike
@@ -238,13 +242,13 @@ function parsePost([string]$postUri)
             if($line -match '</s>')
             {
                 #start and end of strike is on same line (before line break)
-                $line = ($line -replace '<s>','~~') -replace '</s>','~~'
+                $line = ($line.Trim() -replace '<s>','~~') -replace '</s>','~~'
             }
             else
             {
                 #line doesn't contain end piece, add ** to end of each line until '</s> is found
                 $strikeEndMissing = $true
-                $line = ($line -replace '<s>','~~') + '~~'
+                $line = ($line.Trim() -replace '<s>','~~') + '~~'
             }
         }
         $fixedChunk += $line +"`n"
@@ -325,4 +329,4 @@ function parsePost([string]$postUri)
     return $parsedArticleText
 }
 
-#parsePost -postUri 'http://services.runescape.com/m=news/osrs-mobile-ios-beta-invitations-sent?oldschool=1' | clip
+#parsePost -postUri 'http://services.runescape.com/m=news/osrs-mobile-ios-beta-beginning?oldschool=1' | clip
