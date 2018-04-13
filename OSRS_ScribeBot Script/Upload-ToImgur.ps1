@@ -36,8 +36,8 @@
         Write-Host "Error on posting image to imgur, trying again"
         try
         {
-            $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -DisableKeepAlive -ContentType 'application/x-www-form-urlencoded')
             Start-Sleep -Seconds 30
+            $imgurPostData = (Invoke-RestMethod -Method POST -Uri "https://api.imgur.com/3/image" -Headers $header -Body $body -DisableKeepAlive -ContentType 'application/x-www-form-urlencoded')
         }
         catch
         {

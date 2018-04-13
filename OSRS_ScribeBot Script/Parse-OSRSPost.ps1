@@ -21,11 +21,13 @@ function parsePost([string]$postUri)
         
         try
         {
+            Start-Sleep -Seconds 30
             $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
         }
         catch
         {
             Write-Host "Failed to grab info again, trying one more time..."
+            Start-Sleep -Seconds 60
             $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
         }
     }
