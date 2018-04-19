@@ -158,7 +158,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
             {
                 if($parsedText.Length -gt 9000)
                 {
-                    $index = $parsedText.Substring(0,9000).lastIndexOf([Environment]::Newline)
+                    $index = $parsedText.Substring(0,9000).lastIndexOf("`n")
                     
                     #create post via this payload below (partial post) to targeted post/comment
                     $payload = @{
