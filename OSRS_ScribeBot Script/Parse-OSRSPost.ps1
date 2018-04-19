@@ -26,9 +26,16 @@ function parsePost([string]$postUri)
         }
         catch
         {
+            try
+            {
             Write-Host "Failed to grab info again, trying one more time..."
             Start-Sleep -Seconds 60
-            $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive 
+            $r = Invoke-WebRequest -Uri $postUri -UseBasicParsing -UserAgent "OSRS Web Page Scrapping" -DisableKeepAlive
+            }
+            catch
+            {
+                Exit
+            }
         }
     }
     #Jagex uses the following to designate their titles/author/title image (usually)

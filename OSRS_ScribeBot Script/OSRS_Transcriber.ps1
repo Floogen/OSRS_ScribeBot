@@ -137,14 +137,6 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
             #this script caches post via Reddit's save function, as we can check if a news post is saved
                 #once we touch a script, we save it and ignore it in the next pass
 
-        Write-Host "Caching and posting to" $newsLink.title
-        $payload = @{
-                category = "cached"
-                id = $newsLink.name
-
-                }
-        $saveBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/api/save" -Method POST -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
-
         #call parser method
         $parsedText = $null
         $parsedText = (parsePost -postUri $newsLink.url)
@@ -249,6 +241,17 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                         $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
                     }
         }
+
+
+        
+        Write-Host "Caching and posting to" $newsLink.title
+        $payload = @{
+                category = "cached"
+                id = $newsLink.name
+
+                }
+        $saveBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/api/save" -Method POST -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+
     }
 }
 
