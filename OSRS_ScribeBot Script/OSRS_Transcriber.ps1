@@ -69,6 +69,7 @@ $credFile = Import-Csv -Path "$PSScriptRoot\redditAPILogin.csv"
 $username = $credFile.redditUser
 $password = $credFile.apiRedditBotPass
 $clientID = $credFile.clientID
+$userAgent = $credFile.userAgent
 $clientSecret = ConvertTo-SecureString ($credFile.clientSecret) -AsPlainText -Force
 $creds = New-Object -TypeName System.management.Automation.PSCredential -ArgumentList $clientID, $clientSecret
  
@@ -80,7 +81,7 @@ $header = @{
 #check if cached token is valid
 try
 {
-    Invoke-RestMethod -uri "https://oauth.reddit.com/user/$username" -Headers $header -UserAgent "User Agent - OSRS_Scribebot Token Script"
+    Invoke-RestMethod -uri "https://oauth.reddit.com/user/$username" -Headers $header -UserAgent $userAgent
 }
 catch
 {
@@ -105,7 +106,7 @@ $payload = @{
 $searchBlock = $null
 try
 {
-    $searchBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/r/2007scape/new" -Method Get -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+    $searchBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/r/2007scape/new" -Method Get -Headers $header -Body $payload -UserAgent $userAgent
 }
 catch
 {
@@ -116,7 +117,7 @@ catch
     }
     Write-Host "Renewed Access Code." -ForegroundColor Green
     
-    $searchBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/r/2007scape/new" -Method Get -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+    $searchBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/r/2007scape/new" -Method Get -Headers $header -Body $payload -UserAgent $userAgent
 }
 
 #only do one at a time for now, to prevent time-out issues
@@ -169,7 +170,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                 
                     try
                     {
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
                     catch
                     {
@@ -180,7 +181,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                         }
                         Write-Host "Renewed Access Code." -ForegroundColor Green
     
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
 
                     #get ID of newly made comment, so that we can post to it again
@@ -200,7 +201,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                 
                     try
                     {
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
                     catch
                     {
@@ -211,7 +212,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                         }
                         Write-Host "Renewed Access Code." -ForegroundColor Green
     
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
                 }
             }
@@ -227,7 +228,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
             }
                     try
                     {
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
                     catch
                     {
@@ -238,7 +239,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                         }
                         Write-Host "Renewed Access Code." -ForegroundColor Green
     
-                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+                        $postInfo = Invoke-RestMethod -uri "https://oauth.reddit.com/api/comment" -Method Post -Headers $header -Body $payload -UserAgent $userAgent
                     }
         }
 
@@ -250,7 +251,7 @@ foreach($newsLink in ($searchBlock.data.children.data | Where {$_.saved -eq $fal
                 id = $newsLink.name
 
                 }
-        $saveBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/api/save" -Method POST -Headers $header -Body $payload -UserAgent "User Agent - OSRS_Scribebot PS Script"
+        $saveBlock = Invoke-RestMethod -uri "https://oauth.reddit.com/api/save" -Method POST -Headers $header -Body $payload -UserAgent $userAgent
 
     }
 }
